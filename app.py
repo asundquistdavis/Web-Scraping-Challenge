@@ -16,8 +16,8 @@ def index():
 
 @app.route('/scrape')
 def scrape():
-    mars_data = client.mars_db.mars_data
-    mars_data.update_one({}, {'$set': scrape_mars()}, upsert=True)
+    mars_data = client.mars_db.mars_data.find_one()
+    mars_data.update_one({}, {'$set': scrape_mars(starutup=False)}, upsert=True)
     return redirect('/', code=302)
 
 if __name__ == '__main__':

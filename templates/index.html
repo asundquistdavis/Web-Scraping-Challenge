@@ -8,49 +8,62 @@
   </head>
   <body>
     <div class="container">
+        <!-- row - header - row -->
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body d-flex flex-column bg-light">
-                    <h1 class="card-title text-center">Mission to Mars</h1>
-                    <p class="card-text text-center">Welcome! This site gathers news, facts and pictures of Mars. Press the button to scrape the latest data.</p>
-                    <a href="scrape" class="btn btn-primary mt-auto mx-auto">Scrape Some Data</a>
+                        <h1 class="card-title text-center">Mission to Mars</h1>
+                        <p class="card-text text-center">Welcome! This site gathers news, facts and pictures of Mars. Press the button to scrape the latest data.</p>
+                        <a href="scrape" class="btn btn-primary mt-auto mx-auto">Scrape Some Data</a>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- row - news article - row  -->
         <div class="row">
+            <!-- col - news article - col -->
             <div class="col-md-12">
                 <h2>Latest headline about Mars</h2>
+                <hr/>
                 <h5>
-                {{ mars_data['news']['title'] }}
+                <!-- news article title -->
+                {{ mars_data['news']['title'] }}  
+                <small class="text-muted">
+                {{ mars_data.news.date }}
+                </small>
                 </h5>
                 <p>
+                    <!-- news article body -->
                     {{ mars_data['news']['body'] }}
                 </p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8">
+        <!-- row - featured image and Mars/Earth facts table - row -->
+        <div class="row my-3">
+            <!-- col - featured image - col -->
+            <div class="col-lg-6 border py-2">
                 <h2>Featured Image of Mars</h2>
                 {% with img = mars_data['image'] %}
-                <img src="{{ img }}", alt="picture of mars", class="img-fluid mx-auto">
+                <img src="{{ img }}", alt="picture of mars", class="img-fluid">
                 {% endwith %}
             </div>
-            <div class="col-md-4">
+            <!-- col - Mars/Earth facts table - col -->
+            <div class="col-lg-6 border">
                 <h2>Some facts about Mars</h2>
+                <!-- call the table with mars_data.facts, use safe to ensure special chars are preserved -->
                 {{ mars_data['facts']|safe }}
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Martian Hemispheres</h2>
-            </div>
-        </div>
-        <div class="row">
+        <!-- row - Hemispheres images - row -->
+        <div class="row py-2 border">
+            <h2 class="text-center">Martian Hemispheres</h2>
+            <hr/>
+            <!-- cols - one for each hemisphere - cols -->
             {% for hemisphere in mars_data['hemispheres'] %}
             <div class="col-md-3">
                 <div class="card">
+                    <!-- call the img and title for the current hemisphere using hemisphere.img_url and hemisphere.title -->
                     <img src="{{ hemisphere.img_url }}" class="card-img-top" alt="{{ hemisphere.title }}">
                     <div class="card-body">
                     <h5 class="card-title">{{ hemisphere.title }}</h5>

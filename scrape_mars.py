@@ -7,19 +7,33 @@ import requests
 import pandas as pd
 executable_path = {'executable_path': ChromeDriverManager().install()}
 
-def scrape_mars():
+def scrape_mars(startup=False):
 
     # initiallize a dictionary to store document
     mars_data = {}
     
     # call the scrape functions and store data in dictionary
-    mars_data['news'] = scrape_news()
-    mars_data['image'] = scrape_img()
-    mars_data['facts'] = scrape_facts()
-    mars_data['hemispheres'] = scrape_hemispheres()
+    try:
+        mars_data['news'] = scrape_news()
+        mars_data['image'] = scrape_img()
+        
+        # if it is the start up run, scrape the facts table and hemispheres images
+        # these are static, so they are only called once at start up and then skipped each other time
+        if startup == True:
+            # mars_data['facts'] = dt.now() # this line is for testing startup functionality
+            mars_data['facts'] = scrape_facts()
+            mars_data['hemispheres'] = scrape_hemispheres()
 
-    # get the current timestamp and save in dictionary
-    mars_data['time'] = dt.now()
+        # get the current timestamp and save in dictionary
+        mars_data['time'] = dt.now()
+    
+        # scrape was successful
+        mars_data['success'] = True
+    
+    except:
+
+        # scrape was NOT successful
+        mars_data['success'] = False
 
     # return the dictionary
     return mars_data
@@ -39,10 +53,11 @@ def scrape_news():
     with Browser('chrome', **executable_path, headless=True) as browser:
         browser.visit(url)
         html = browser.html
-        div = BS(html, 'lxml').find('section', class_="image_and_description_container").find('div', class_='col-md-12')
-        title = div.find('div',class_='content_title').text
+        div = BS(html, 'lxml').find('section', class_="image_and_description_container").find_all('div', class_='col-md-12')[0]
+        title = div.find('div', class_='content_title').text
+        date = div.find('div', class_='list_date').text
         body = div.find('div', class_='article_teaser_body').text
-    return {'title': title, 'body': body}
+    return {'title': title, 'date': date, 'body': body}
 
 def scrape_img():
 
